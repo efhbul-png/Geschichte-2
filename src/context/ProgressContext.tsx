@@ -18,7 +18,6 @@ interface ProgressContextType {
   authenticateTeacher: (enteredPass: string) => boolean;
   lockTeacherDashboard: () => void;
   changeTeacherPassword: (oldPass: string, newPass: string) => { success: boolean; message: string };
-  teacherPasswordHint: string;
   isGlossaryOpen: boolean;
   setIsGlossaryOpen: (val: boolean) => void;
   isBadgeModalOpen: boolean;
@@ -226,7 +225,6 @@ export const ProgressProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         authenticateTeacher,
         lockTeacherDashboard,
         changeTeacherPassword,
-        teacherPasswordHint: DEFAULT_PASSWORD,
         isGlossaryOpen,
         setIsGlossaryOpen,
         isBadgeModalOpen,

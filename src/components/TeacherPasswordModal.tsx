@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Lock, Eye, EyeOff, ShieldCheck, X, AlertCircle, KeyRound } from 'lucide-react';
+import { Lock, Eye, EyeOff, ShieldCheck, X, AlertCircle } from 'lucide-react';
 import { useProgress } from '../context/ProgressContext';
 
 export const TeacherPasswordModal: React.FC = () => {
@@ -7,7 +7,6 @@ export const TeacherPasswordModal: React.FC = () => {
     isPasswordModalOpen,
     setIsPasswordModalOpen,
     authenticateTeacher,
-    teacherPasswordHint,
   } = useProgress();
 
   const [passwordInput, setPasswordInput] = useState<string>('');
@@ -100,19 +99,6 @@ export const TeacherPasswordModal: React.FC = () => {
               <span>{errorMsg}</span>
             </div>
           )}
-
-          <div className="p-3 bg-amber-50/70 border border-amber-900/10 rounded-xl text-[11px] text-amber-950 flex items-start gap-2">
-            <KeyRound className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-bold">Standard-Passwort: </span>
-              <code className="bg-amber-100 px-1 py-0.5 rounded text-amber-900 font-mono font-bold">
-                {teacherPasswordHint}
-              </code>
-              <span className="block text-slate-500 mt-0.5">
-                (Kann im Lehrer-Dashboard jederzeit geändert werden)
-              </span>
-            </div>
-          </div>
 
           <div className="pt-2 flex items-center justify-end gap-3">
             <button

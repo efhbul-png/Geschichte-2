@@ -22,7 +22,7 @@ import { StationWorksheetGenerator } from './StationWorksheetGenerator';
 import { useProgress } from '../context/ProgressContext';
 
 export const TeacherDashboard: React.FC = () => {
-  const { lockTeacherDashboard, changeTeacherPassword, teacherPasswordHint } = useProgress();
+  const { lockTeacherDashboard, changeTeacherPassword } = useProgress();
   const [selectedPage, setSelectedPage] = useState<number | 'all'>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [activeTab, setActiveTab] = useState<'worksheets' | 'solutions' | 'competencies' | 'printable' | 'security'>('worksheets');
@@ -438,9 +438,6 @@ export const TeacherDashboard: React.FC = () => {
                     required
                     className="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500 bg-slate-50"
                   />
-                  <span className="text-[10px] text-slate-400 mt-0.5 block">
-                    (Ausgangs-Passwort: <code className="font-mono">{teacherPasswordHint}</code>)
-                  </span>
                 </div>
 
                 <div>
