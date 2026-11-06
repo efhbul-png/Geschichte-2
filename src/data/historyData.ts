@@ -1,0 +1,790 @@
+import { Station, Badge, DecisionStep } from '../types';
+
+export const BADGES: Badge[] = [
+  {
+    id: 'badge-1',
+    title: 'Freiheits-Pionier',
+    description: 'Befreiungskriege und Ursprung der Nationalfarben Schwarz-Rot-Gold verstanden.',
+    iconName: 'Flag',
+    unlockedAtStation: 1,
+  },
+  {
+    id: 'badge-2',
+    title: 'Diplomat des Kongresses',
+    description: 'Die Prinzipien von Restauration, Legitimität und den Deutschen Bund durchschaut.',
+    iconName: 'Crown',
+    unlockedAtStation: 2,
+  },
+  {
+    id: 'badge-3',
+    title: 'Zensur-Spürhund',
+    description: 'Die Karikatur „Der Denker-Club“ und die Karlsbader Beschlüsse von 1819 analysiert.',
+    iconName: 'Search',
+    unlockedAtStation: 3,
+  },
+  {
+    id: 'badge-4',
+    title: 'Dichter des Vormärz',
+    description: 'Herweghs politisches Gedicht „Dem deutschen Volk“ erfolgreich dechiffriert.',
+    iconName: 'Feather',
+    unlockedAtStation: 4,
+  },
+  {
+    id: 'badge-5',
+    title: 'Barrikaden-Held',
+    description: 'Die brenzligen März-Tage von 1848 in Berlin taktisch und mutig gemeistert.',
+    iconName: 'Shield',
+    unlockedAtStation: 5,
+  },
+  {
+    id: 'badge-6',
+    title: 'Paulskirchen-Präsident',
+    description: 'Die Fraktionen (Donnersberg, Casino, Café Milani) und Grundrechte zugeordnet.',
+    iconName: 'Building',
+    unlockedAtStation: 6,
+  },
+  {
+    id: 'badge-7',
+    title: 'Hüter der Grundrechte',
+    description: 'Das Scheitern und das demokratische Erbe der Revolution 1848/49 bewertet.',
+    iconName: 'Award',
+    unlockedAtStation: 7,
+  },
+];
+
+export const GLOSSARY: { term: string; explanation: string; category: string }[] = [
+  {
+    term: 'Restauration',
+    explanation: 'Wiederherstellung der alten politischen und gesellschaftlichen Ordnung vor der Französischen Revolution von 1789 (Fürstenherrschaft statt Volkssouveränität).',
+    category: 'Herrschaftssystem',
+  },
+  {
+    term: 'Deutscher Bund',
+    explanation: '1815 auf dem Wiener Kongress gegründeter lockerer Staatenbund aus 35 Fürstentümern und 4 freien Städten, geleitet von der Bundesversammlung in Frankfurt am Main.',
+    category: 'Staatsordnung',
+  },
+  {
+    term: 'Liberalismus',
+    explanation: 'Politische Weltanschauung, die Freiheit und Rechte des einzelnen Bürgers betont (z. B. Meinungs-, Presse- und Glaubensfreiheit, Gewaltenteilung und eine Verfassung).',
+    category: 'Ideologie',
+  },
+  {
+    term: 'Nationalismus (19. Jh.)',
+    explanation: 'Streben nach einem gemeinsamen deutschen Nationalstaat mit einheitlicher Verfassung. Im Vormärz eng mit Freiheitsforderungen verknüpft, oft aber auch mit Franzosenhass verbunden.',
+    category: 'Ideologie',
+  },
+  {
+    term: 'Karlsbader Beschlüsse (1819)',
+    explanation: 'Reaktionsmaßnahmen der Fürsten nach der Ermordung Kotzebues: Strenge Pressezensur, Verbot von Burschenschaften, Turnverbot und Überwachung von Professoren und Studenten.',
+    category: 'Gesetz & Zensur',
+  },
+  {
+    term: 'Vormärz',
+    explanation: 'Epoche zwischen dem Hambacher Fest 1832 (bzw. 1815) und der Märzrevolution 1848, geprägt von politischer Gärung, Zensur, Armut (Pauperismus) und Protesten.',
+    category: 'Epoche',
+  },
+  {
+    term: 'Biedermeier',
+    explanation: 'Rückzug vieler Bürger ins private Familien- und Häuslerleben als Reaktion auf staatliche Bespitzelung und Zensur in den Jahren zwischen 1815 und 1848.',
+    category: 'Kultur',
+  },
+  {
+    term: 'Paulskirche',
+    explanation: 'Versammlungsort des ersten gesamtdeutschen, frei gewählten Parlaments in Frankfurt am Main, das am 18. Mai 1848 zusammentrat, um Verfassung und Grundrechte zu erarbeiten.',
+    category: 'Parlament',
+  },
+  {
+    term: 'Märzforderungen',
+    explanation: 'Katalog von Bürgerforderungen im Frühjahr 1848: Pressefreiheit, Schwurgerichte, Volksbewaffnung/Bürgerwehr, Versammlungsfreiheit und ein deutsches Nationalparlament.',
+    category: 'Revolution',
+  },
+  {
+    term: 'Kleindeutsche vs. Großdeutsche Lösung',
+    explanation: 'Großdeutsch: Einigung Deutschlands unter Einschluss Österreichs. Kleindeutsch: Einigung ohne Österreich unter der Führung des preußischen Königs (setzte sich 1849 durch).',
+    category: 'Nationalstaat',
+  },
+];
+
+export const TIMELINE_EVENTS = [
+  { year: '1813', title: 'Befreiungskriege', desc: 'Völkerschlacht bei Leipzig gegen Napoleon; Freikorps Lützow prägt Schwarz-Rot-Gold.' },
+  { year: '1815', title: 'Wiener Kongress', desc: 'Neuordnung Europas; Gründung des Deutschen Bundes (Staatenbund statt Nationalstaat).' },
+  { year: '1817', title: 'Wartburgfest', desc: '500 Studenten fordern Einheit & Freiheit; Verbrennung reaktionärer Schriften.' },
+  { year: '1819', title: 'Karlsbader Beschlüsse', desc: 'Ermordung Kotzebues führt zu strenger Zensur, Berufsverboten und Turnplatz-Schließungen.' },
+  { year: '1832', title: 'Hambacher Fest', desc: 'Bis zu 30.000 Menschen demonstrieren mit schwarz-rot-goldenen Fahnen für Volkssouveränität.' },
+  { year: '1834', title: 'Hessischer Landbote', desc: 'Georg Büchner verfasst das revolutionäre Flugblatt „Friede den Hütten! Krieg den Palästen!“' },
+  { year: '1848', title: 'Märzrevolution', desc: 'Barrikadenkämpfe in Wien und Berlin; Zusage von Reformen und Wahlen durch die Fürsten.' },
+  { year: '1848', title: 'Nationalversammlung', desc: '18. Mai: Erstes deutsches Parlament zieht in die Frankfurter Paulskirche ein.' },
+  { year: '1849', title: 'Reichsverfassung & Scheitern', desc: 'Friedrich Wilhelm IV. lehnt die Kaiserkrone ab; Niederschlagung der Maiaufstände in Rastatt.' },
+];
+
+export const BARRICADE_SCENARIO: DecisionStep[] = [
+  {
+    id: 'step-1',
+    date: '18. März 1848, 13:30 Uhr',
+    location: 'Schlossplatz Berlin',
+    situation: 'Tausende Bürger und Handwerker haben sich vor dem königlichen Schloss versammelt. Friedrich Wilhelm IV. hat soeben versprochen, die Pressezensur aufzuheben und einen Landtag einzuberufen. Die Stimmung ist freudig – doch plötzlich marschieren königliche Dragoner auf!',
+    choices: [
+      {
+        text: 'Du jubelst dem König laut zu und forderst die Menge auf, friedlich nach Hause zu gehen.',
+        consequence: 'Die Menschenmenge ist skeptisch. Plötzlich lösen sich aus den Reihen des Militärs zwei scharfe Schüsse! Panik bricht aus: „Verrat! Der König lässt auf uns schießen!“',
+        historicalContext: 'Tatsächlich fielen am 18. März zwei ungeklärte Schüsse, die das friedliche Treffen augenblicklich in eine erbitterte Stadtschlacht verwandelten.',
+        points: 10,
+      },
+      {
+        text: 'Du beobachtest die Dragoner misstrauisch und drängst deine Freunde, in Deckung in eine Seitenstraße zu gehen.',
+        consequence: 'Eine weise Vorahnung! Kaum seid ihr um die Ecke, knallen Schüsse über den Schlossplatz. Verwundete schreien, die Menge flieht und ruft: „Zu den Waffen!“',
+        historicalContext: 'Fliehende Bürger riegelten binnen weniger Stunden mit Möbeln, Fuhrwerken und Pflastersteinen hunderte Straßen Berlins ab.',
+        points: 25,
+      },
+      {
+        text: 'Du kletterst auf ein Fuhrwerk und forderst den sofortigen Rückzug aller königlichen Truppen aus der Stadt.',
+        consequence: 'Ein Dragoner-Offizier zieht den Säbel und reitet auf dich zu. In diesem Augenblick fallen Schüsse – du hechelst hinter einen Brunnen!',
+        historicalContext: 'Der Rückzug der Truppen war die Kernforderung der Märzrevolutionäre in Berlin.',
+        points: 20,
+      },
+    ],
+  },
+  {
+    id: 'step-2',
+    date: '18. März 1848, 16:00 Uhr',
+    location: 'Friedrichstraße / Alexanderplatz',
+    situation: 'Überall in Berlin werden Barrikaden errichtet. Nachbarn werfen Matratzen, Dachbalken, Fässer und Pflastersteine auf die Straßen. Soldaten mit Kanonen rücken vor. Ein Tischlergeselle bittet dich um Hilfe beim Bau der Hauptbarrikade.',
+    choices: [
+      {
+        text: 'Du packst mit an, wälzt schwere Bierfässer herbei und bindest eine schwarz-rot-goldene Fahne an den Giebel.',
+        consequence: 'Die Barrikade hält der ersten Infanteriewelle stand! Die schwarz-rot-goldene Fahne weht im Pulverdampf und gibt den Verteidigern Mut.',
+        historicalContext: 'Frauen, Studenten und Handwerker verteidigten gemeinsam über 900 Barrikaden in Berlin.',
+        points: 30,
+      },
+      {
+        text: 'Du besorgst Wasser und Verbandszeug aus der benachbarten Apotheke, um Verwundete zu versorgen.',
+        consequence: 'Deine Hilfe rettet mehreren durch Granatsplitter verletzten Kämpfern das Leben. Ein Arzt dankt dir mit Tränen in den Augen.',
+        historicalContext: 'Ohne die organisierte Versorgung durch Bürgerinnen und Bürger wäre der Widerstand am Abend zusammengebrochen.',
+        points: 25,
+      },
+      {
+        text: 'Du versteckst dich im Keller und wartest, bis das Kanonenfeuer abebbt.',
+        consequence: 'Du bleibst unverletzt, aber deine Freunde betrachten dich nach der Schlacht mit kühlem Blick. Der Kampf war hart und forderte Solidarität.',
+        historicalContext: 'Über 200 Aufständische (die sogenannten „Märzgefallenen“) starben in dieser Nacht für Bürgerrechte.',
+        points: 5,
+      },
+    ],
+  },
+  {
+    id: 'step-3',
+    date: '19. März 1848, Morgengrauen',
+    location: 'Vor dem Schloss Berlin',
+    situation: 'Die Truppen des Königs konnten die Barrikaden nicht brechen. General von Prittwitz befiehlt den Rückzug. Die Bürger tragen die aufgebahrten Toten in den Schlosshof und rufen nach dem König!',
+    choices: [
+      {
+        text: 'Du forderst: „Kopf ab mit der Krone! Wir stürmen das Schloss und rufen die Republik aus!“',
+        consequence: 'Die meisten Bürger winken ab: Sie wollen keinen blutigen Königsmord wie 1793 in Frankreich, sondern eine verfassungsmäßige Monarchie mit Rechten.',
+        historicalContext: '1848 war die Mehrheit der deutschen Revolutionäre gemäßigt liberal und forderte keine Republik, sondern Reformen.',
+        points: 15,
+      },
+      {
+        text: 'Du forderst mit tausenden Berlinern: „Hut ab vor den Toten! Der König soll heraustreten!“',
+        consequence: 'Friedrich Wilhelm IV. tritt bleich auf den Schlosshof. Unter den Rufen der Menge nimmt er seine Mütze ab und verneigt sich tief vor den Leichen der Revolutionäre!',
+        historicalContext: 'Ein historischer Moment: Der preußische Monarch beugte sein Haupt vor den im Straßenkampf getöteten Untertanen.',
+        points: 30,
+      },
+      {
+        text: 'Du beginnst sofort damit, Flugblätter für die Wahl einer Nationalversammlung zu drucken.',
+        consequence: 'Deine Flugblätter finden reißenden Absatz. Am 21. März reitet der König mit schwarz-rot-goldener Armbinde durch Berlin!',
+        historicalContext: 'Mit dem Ritt durch Berlin und der Proklamation „Preußen geht fortan in Deutschland auf“ lenkte der König vorübergehend ein.',
+        points: 25,
+      },
+    ],
+  },
+];
+
+export const STATIONS: Station[] = [
+  {
+    id: 1,
+    slug: 'befreiungskriege',
+    period: '1813 – 1815',
+    title: 'Die Befreiungskriege & Schwarz-Rot-Gold',
+    subtitle: 'Geburt einer deutschen Nationalidee im Kampf gegen Napoleon',
+    keyQuestion: 'Wie entstand aus der französischen Fremdherrschaft der Wunsch nach einem deutschen Einheitsstaat?',
+    color: 'amber',
+    summary: 'Unter Napoleons Vorherrschaft litten viele deutsche Staaten unter Zöllen, Truppenaushebungen und Kontributionen. In den Freiheitskriegen von 1813 entstand eine breite Welle patriotischer Begeisterung – doch dieser Patriotismus schlug vielfach in radikalen Franzosenhass um.',
+    contentParagraphs: [
+      {
+        heading: 'Unter französischer Fremdherrschaft',
+        text: 'Seit 1806 standen die Truppen der vereinten Monarchen Europas fast vollständig unter der Führung Napoleons. Die deutschen Staaten gerieten nahezu komplett in französische Abhängigkeit. Tausende deutsche Soldaten mussten in Napoleons Russlandfeldzug marschieren – nur wenige kehrten lebend zurück.',
+        highlight: 'Gleichzeitig brachte die französische Herrschaft wichtige bürgerliche Errungenschaften: Abschaffung der Leibeigenschaft, Gleichheit vor dem Gesetz (Code Civil) und Reformen der Verwaltung.',
+      },
+      {
+        heading: 'Vom Patriotismus zum Nationalismus',
+        text: 'Nach Napoleons Desaster in Russland wendete sich das Blatt. In allen deutschen Staaten bildete sich eine breite vaterländische Bewegung. Viele Deutsche meldeten sich freiwillig in Freikorps, um die französische Herrschaft zu beenden. Doch diese Nationalbewegung verstand sich primär als Abgrenzung und Feindschaft gegen Frankreich.',
+        highlight: 'Ernst Moritz Arndt forderte einen unversöhnlichen Hass gegen Frankreich als „heiligste Religion des deutschen Volkes“.',
+      },
+      {
+        heading: 'Woher kommen die Farben Schwarz-Rot-Gold?',
+        text: 'Im Lützowschen Freikorps kämpften Studenten, Handwerker und Dichter aus allen deutschen Regionen gemeinsam. Da sie keine einheitlichen Uniformen hatten, färbten sie ihre Zivilröcke schwarz, versahen sie mit roten Aufschlägen und glänzenden Messingknöpfen (Gold). Daraus wurde das Symbol der nationalen Einheitsbewegung!',
+      },
+    ],
+    quotes: [
+      {
+        id: 'q-arndt',
+        author: 'Ernst Moritz Arndt',
+        role: 'Schriftsteller & Nationalist',
+        year: '1813',
+        text: '„Ich will den Haß gegen die Franzosen, nicht bloß für diesen Krieg, ich will ihn für lange Zeit, ich will ihn für immer. Dieser Haß glühe als die Religion des deutschen Volkes [...] als ein heiliger Wahn in allen Herzen!“',
+        source: 'Über Volkshaß und den Gebrauch einer fremden Sprache',
+        task: 'Beurteile, ob dieser Text als harmloser Patriotismus oder als aggressiver Nationalismus einzustufen ist.',
+      },
+      {
+        id: 'q-goethe',
+        author: 'Johann Wolfgang von Goethe',
+        role: 'Dichterfürst (im Gespräch mit Eckermann)',
+        year: '1830',
+        text: '„Wie konnte ich den Franzosen hassen, denen ich einen so großen Teil meiner Bildung verdankte? Nationalhaß ist eine besondere Sache. Sie werden ihn immer auf den untersten Kulturstufen am heftigsten und stärksten finden.“',
+        source: 'Gespräche mit Goethe, hrsg. v. Eckermann',
+        task: 'Vergleiche Goethes Weltoffenheit mit Arndts martialischer Haltung.',
+      },
+    ],
+    quiz: [
+      {
+        id: 'q1-1',
+        question: 'Wie unterschied sich die deutsche Nationalidee vor 1806 von jener nach den Befreiungskriegen?',
+        options: [
+          'Vor 1806 verstanden sich Menschen primär als Bayern, Preußen oder Sachsen; erst im gemeinsamen Abwehrkampf entstand ein deutsches Zusammengehörigkeitsgefühl.',
+          'Deutschland war schon seit 1600 ein fest vereinter Nationalstaat mit Kaiser und Parlament.',
+          'Napoleon zwang alle Deutschen per Dekret, sich nur noch als eine einheitliche Nation zu bezeichnen.',
+        ],
+        correctIndex: 0,
+        explanation: 'Im Heiligen Römischen Reich gab es Hunderte Einzelstaaten. Erst das gemeinsame Feindbild Napoleon schuf ein überregionales deutsches Gemeinschaftsgefühl.',
+      },
+      {
+        id: 'q1-2',
+        question: 'Was war der konkrete textile Ursprung der Farben Schwarz-Rot-Gold?',
+        options: [
+          'Die Fahne der französischen Revolutionstruppen, die umgekehrt gefärbt wurde.',
+          'Die Uniform der Lützower Jäger: schwarz gefärbte Röcke, rote Vorstöße und goldene Knöpfe.',
+          'Das Wappen des preußischen Königs Friedrich Wilhelm III.',
+        ],
+        correctIndex: 1,
+        explanation: 'Da die Freiwilligen des Freikorps Lützow eigene Kleidung trugen, wurden alle Stoffe schwarz eingefärbt, rot abgesetzt und mit Messingknöpfen (Gold) versehen.',
+      },
+      {
+        id: 'q1-3',
+        question: 'Welche Kehrseite hatte die frühe deutsche Nationalbewegung?',
+        options: [
+          'Sie forderte die vollständige Unterwerfung unter den russischen Zaren.',
+          'Sie war oft mit chauvinistischem Franzosenhass und der Herabsetzung fremder Völker verknüpft.',
+          'Sie lehnte jede Form von Bildung und deutscher Sprache ab.',
+        ],
+        correctIndex: 1,
+        explanation: 'Wie Ernst Moritz Arndt belegt, definierte sich der frühe Nationalismus oft durch Hass und die Abwertung des französischen Nachbarn.',
+      },
+    ],
+    badgeId: 'badge-1',
+    miniGameType: 'quiz',
+  },
+  {
+    id: 2,
+    slug: 'wiener-kongress',
+    period: '1814 – 1815',
+    title: 'Wiener Kongress & Deutscher Bund',
+    subtitle: 'Restauration der Fürstenmacht gegen die Hoffnung des Volkes',
+    keyQuestion: 'Warum schufen die europäischen Fürsten keinen einheitlichen deutschen Nationalstaat?',
+    color: 'slate',
+    summary: 'Nach dem Sturz Napoleons trafen sich die europäischen Herrscher in Wien. Unter der Leitung von Fürst Metternich stellten sie die alte fürstliche Ordnung wieder her (Restauration). Anstelle eines Nationalstaats gründeten sie den „Deutschen Bund“ – einen losen Staatenbund aus 39 Mitgliedern.',
+    contentParagraphs: [
+      {
+        heading: 'Die drei Leitprinzipien des Wiener Kongresses',
+        text: '1. Restauration: Wiederherstellung der vorrevolutionären Verhältnisse von 1789.\n2. Legitimität: Rechtmäßigkeit der Herrscherhäuser „von Gottes Gnaden“.\n3. Solidarität: Gemeinsamer Schutz der Fürsten gegen revolutionäre Bestrebungen (Heilige Allianz).',
+      },
+      {
+        heading: 'Der Deutsche Bund – Ein Kompromiss',
+        text: 'Für ein geeintes Deutschland gab es weder bei den Großmächten (Großbritannien, Russland, Frankreich, Österreich) noch bei den deutschen Fürsten Rückhalt. Jeder Fürst wollte seine eigene Souveränität behalten. Das Ergebnis war der „Deutsche Bund“ (1815): Ein loser Zusammenschluss von 35 Fürstentümern und 4 freien Städten.',
+        highlight: 'Der Bund besaß kein Staatsoberhaupt, keine gemeinsame Regierung, kein Parlament und kein einheitliches Recht. Einziges Organ war die ständige Gesandtenversammlung in Frankfurt am Main unter österreichischem Vorsitz.',
+      },
+      {
+        heading: 'Tiefe Enttäuschung im Volk',
+        text: 'Die Bürger fühlten sich betrogen: Sie hatten in den Befreiungskriegen Blut und Gut geopfert, um Freiheit und Einheit zu erlangen – stattdessen erhielten sie wieder feudale Fürstenwillkür und Zersplitterung.',
+      },
+    ],
+    quotes: [
+      {
+        id: 'q-stein',
+        author: 'Freiherr vom Stein',
+        role: 'Preußischer Reformer & Staatsmann',
+        year: '1815',
+        text: '„Unsere neuen Gesetzgeber haben an die Stelle des alten Deutschen Reiches mit einem Haupte, gesetzgebender Versammlung, Gerichten, eine Vereinigung gesetzt, die ein Ganzes bildete – einen Deutschen Bund gesetzt, ohne Haupt, ohne Gerichte, schwach verbunden für die allgemeine Verteidigung.“',
+        source: 'Denkschrift über die deutsche Verfassung',
+        task: 'Arbeite heraus, warum Stein die Bundesakte als unvollständig und zahnlos verurteilte.',
+      },
+      {
+        id: 'q-heeren',
+        author: 'Arnold Ludwig Heeren',
+        role: 'Göttinger Historiker',
+        year: '1816',
+        text: '„Der Deutsche Bund macht geographisch den Mittelpunkt des Staatensystems von Europa aus. Er ist so eingerichtet, dass er wohl zur Verteidigung stark genug ist, aber nicht zur Eroberung. [...] Er ist die wahre Bürgschaft des Friedens in Europa.“',
+        source: 'Handbuch der Geschichte des Europäischen Staatensystems',
+        task: 'Erkläre, warum das Ausland einen schwachen deutschen Bund einem starken deutschen Nationalstaat vorzog.',
+      },
+    ],
+    quiz: [
+      {
+        id: 'q2-1',
+        question: 'Was versteht man unter dem Begriff „Restauration“ im Jahr 1815?',
+        options: [
+          'Den Wiederaufbau zerbombter Städte nach den Napoleonischen Kriegen.',
+          'Die Wiederherstellung der fürstlichen Herrschaftsverhältnisse vor der Französischen Revolution.',
+          'Die Einführung moderner Industrieanlagen und Eisenbahnnetze.',
+        ],
+        correctIndex: 1,
+        explanation: 'Restauration bedeutet wörtlich Wiederherstellung: Die Monarchen wollten ihre alte Macht vor 1789 sichern und bürgerliche Mitsprache zurückdrängen.',
+      },
+      {
+        id: 'q2-2',
+        question: 'Warum war der Deutsche Bund ein „Staatenbund“ und kein „Bundesstaat“?',
+        options: [
+          'Weil die 39 Einzelstaaten souverän blieben und es weder ein gemeinsames Parlament noch eine gemeinsame Regierung gab.',
+          'Weil nur Bundesländer im Norden mitmachten, der Süden aber unabhängig blieb.',
+          'Weil der Bund von den USA und Großbritannien direkt regiert wurde.',
+        ],
+        correctIndex: 0,
+        explanation: 'Ein Staatenbund ist ein loser Zusammenschluss souveräner Staaten. Ein Bundesstaat (wie Deutschland heute) hat ein übergeordnetes Parlament und Staatsoberhaupt.',
+      },
+      {
+        id: 'q2-3',
+        question: 'Welches Land führte den ständigen Vorsitz in der Frankfurter Bundesversammlung?',
+        options: ['Preußen', 'Bayern', 'Österreich'],
+        correctIndex: 2,
+        explanation: 'Unter Führung des österreichischen Staatskanzlers Fürst von Metternich dominierte Österreich die Politik des Deutschen Bundes.',
+      },
+    ],
+    badgeId: 'badge-2',
+    miniGameType: 'quiz',
+  },
+  {
+    id: 3,
+    slug: 'buerger-fordern-freiheit',
+    period: '1817 – 1834',
+    title: 'Bürger fordern Einheit & Freiheit',
+    subtitle: 'Wartburgfest, Zensurkeule der Karlsbader Beschlüsse & Hambach',
+    keyQuestion: 'Wie wehrten sich die Bürger gegen Unterdrückung und Zensur?',
+    color: 'rose',
+    summary: 'Studenten und Bürger ließen sich das Streben nach Freiheit nicht verbieten. Nach dem Wartburgfest 1817 schlugen die Fürsten 1819 mit den drakonischen Karlsbader Beschlüssen zurück. Viele Bürger zogen sich ins idyllische Biedermeier zurück – doch 1832 entflammte auf dem Hambacher Schloss der Protest erneut.',
+    contentParagraphs: [
+      {
+        heading: 'Wartburgfest 1817',
+        text: 'Am 18. Oktober 1817 versammelten sich rund 500 Studenten auf der Wartburg bei Eisenach. Sie gedachten des Reformators Martin Luther und der Völkerschlacht bei Leipzig. Sie forderten Pressefreiheit, ein einheitliches deutsches Recht und eine gesamtdeutsche Verfassung. Am Abend wurden symbolisch reaktionäre Bücher und ein preußischer Ulanenschnürleib verbrannt.',
+      },
+      {
+        heading: 'Karlsbader Beschlüsse 1819 – Die Repression',
+        text: 'Als der Theologiestudent Karl Ludwig Sand 1819 den regierungstreuen Schriftsteller August von Kotzebue ermordete, nutzten die Fürsten dies als Vorwand: In Karlsbad beschlossen sie strenge Pressezensur, das Verbot aller Burschenschaften, Entlassung liberaler Professoren und die Einrichtung einer Zentraluntersuchungskommission in Mainz.',
+        highlight: 'Wer frei sprach oder schrieb, riskierte Berufsverbot, Festungshaft oder Flucht ins Exil (Demagogenverfolgung).',
+      },
+      {
+        heading: 'Hambacher Fest 1832 & Georg Büchner',
+        text: 'Im Mai 1832 zogen bis zu 30.000 Männer und Frauen auf das Hambacher Schloss in der Pfalz. Es war die erste politische Großdemonstration in Deutschland! Gefordert wurden die Einigung Deutschlands, eine freie Republik und die Solidarität aller unterdrückten Völker Europas. 1834 rief Georg Büchner im Flugblatt „Der Hessische Landbote“ sogar die Bauern zum offenen Aufruhr auf.',
+      },
+    ],
+    quotes: [
+      {
+        id: 'q-buechner',
+        author: 'Georg Büchner',
+        role: 'Arzt & Revolutionär',
+        year: '1834',
+        text: '„Friede den Hütten! Krieg den Palästen! [...] Das Leben des Bauern ist ein langer Sonntag, sie wohnen in schönen Häusern, sie tragen zierliche Kleider... Das Blut des Volkes fließt, damit die Fürsten im Luxus schwelgen. Erhebet euch!“',
+        source: 'Der Hessische Landbote (Flugschrift)',
+        task: 'Erkläre die Sprengkraft dieses Flugblatts und warum Büchner vor der Polizei nach Straßburg fliehen musste.',
+      },
+    ],
+    caricature: {
+      id: 'caricature-denkerclub',
+      title: 'Der Denker-Club (1825)',
+      year: 'ca. 1825',
+      source: 'Kolorierte Radierung, Deutsches Historisches Museum Berlin',
+      description: 'Acht Gelehrte sitzen schweigend an einem Tisch mit Maulkörben. An der Wand hängen Gesetzestafeln.',
+      guidingQuestion: 'Welche Gesetze herrschen in diesem Club und wie karikiert das Bild die Karlsbader Beschlüsse?',
+      hotspots: [
+        {
+          x: 24,
+          y: 28,
+          title: 'Die Tafel der Vereinsregeln',
+          description: 'Regel I: „Schweigen ist das erste Gesetz dieser gelehrten Gesellschaft.“ Regel II: Niemand darf seiner Zunge freien Lauf lassen.',
+          historicalDetail: 'Ein beißender Spott auf die Zensurbehörden des Deutschen Bundes, die jede freie Meinungsäußerung unterdrückten.',
+        },
+        {
+          x: 48,
+          y: 42,
+          title: 'Die Maulkörbe der Gelehrten',
+          description: 'Die Denker tragen echte Leder- und Drahtmaulkörbe vor dem Mund.',
+          historicalDetail: 'Symbolisiert das Berufsverbot und den Zwang für Universitätsdozenten, regierungstreu zu lehren.',
+        },
+        {
+          x: 75,
+          y: 65,
+          title: 'Die Sanduhr der Redezeit',
+          description: 'Auf dem Tisch steht eine Sanduhr, um zu prüfen, wie lange die Mitglieder noch stillsitzen können.',
+          historicalDetail: 'Zeigt die Groteske: Wo Gelehrte debattieren sollten, wird das Nichtstun und Schweigen gemessen.',
+        },
+      ],
+    },
+    quiz: [
+      {
+        id: 'q3-1',
+        question: 'Welches Ereignis nahmen die Fürsten 1819 zum Anlass für die Karlsbader Beschlüsse?',
+        options: [
+          'Den Ausbruch der Cholera in Berlin.',
+          'Die Ermordung des konservativen Schriftstellers August von Kotzebue durch den Studenten Karl Ludwig Sand.',
+          'Einen bewaffneten Putschversuch von Hambacher Bürgern.',
+        ],
+        correctIndex: 1,
+        explanation: 'Metternich nutzte das Attentat Sands gezielt aus, um liberale und nationale Ideen an Schulen und Universitäten im Keim zu ersticken.',
+      },
+      {
+        id: 'q3-2',
+        question: 'Was forderte Georg Büchner in seiner Flugschrift „Der Hessische Landbote“?',
+        options: [
+          'Treue zum Großherzog von Hessen und freiwillige Steuererhöhungen.',
+          '„Friede den Hütten! Krieg den Palästen!“ – Aufstand der armen Landbevölkerung gegen die Ausbeutung durch Adel und Beamte.',
+          'Einen reinen Wirtschaftsbund mit Frankreich ohne politische Rechte.',
+        ],
+        correctIndex: 1,
+        explanation: 'Büchner prangerte die Schere zwischen bitterer Armut der Bauern und dem Prunk des Fürstenhofs radikal an.',
+      },
+      {
+        id: 'q3-3',
+        question: 'Warum gilt das Hambacher Fest von 1832 als Meilenstein?',
+        options: [
+          'Weil dort zum ersten Mal über 20.000 Menschen aller Stände, inklusive Frauen, friedlich für Freiheit und europäische Völkerfreundschaft demonstrierten.',
+          'Weil die Fürsten dort freiwillig ihre Kronen ablegten.',
+          'Weil dort die erste Eisenbahnlinie Deutschlands feierlich eröffnet wurde.',
+        ],
+        correctIndex: 0,
+        explanation: 'Das Hambacher Fest war die größte Massenkundgebung des Vormärz und trug schwarz-rot-goldene Fahnen als Zeichen der Hoffnung.',
+      },
+    ],
+    badgeId: 'badge-3',
+    miniGameType: 'caricature',
+  },
+  {
+    id: 4,
+    slug: 'gedicht-herwegh',
+    period: '1841',
+    title: 'Quellen-Labor: Zensur & Politische Lyrik',
+    subtitle: 'Georg Herweghs revolutionäres Gedicht „Dem deutschen Volk“',
+    keyQuestion: 'Wie nutzten Dichter im Vormärz Reime und Metaphern, um Zensur zu umgehen und das Volk aufzurütteln?',
+    color: 'emerald',
+    summary: 'Da politische Zeitungen verboten oder zensiert wurden, griffen liberale Autoren zu Gedichten und Liedern. Gedichte wurden auswendig gelernt, in Flugblättern heimlich über Grenzen geschmuggelt und in Kneipen gesungen. Georg Herweghs Gedicht von 1841 rief offen zum Kampf auf.',
+    contentParagraphs: [
+      {
+        heading: 'Die Rolle politischer Lyrik im Vormärz',
+        text: 'Zwischen 1830 und 1848 erlebte politische Lyrik eine Hochkonjunktur. Gedichte von Heinrich Heine, Hoffmann von Fallersleben, Ferdinand Freiligrath und Georg Herwegh fungierten als Sprengstoff. Sie erreichten auch Menschen, die keine dicken politischen Abhandlungen lasen.',
+      },
+      {
+        heading: 'Georg Herwegh (1817–1875)',
+        text: 'Herwegh, Pfarrerssohn aus Stuttgart, verweigerte den Militärdienst und floh in die Schweiz. Sein Gedichtband „Gedichte eines Lebendigen“ wurde im Deutschen Bund sofort verboten, verkaufte sich aber unter der Hand in zehntausenden Exemplaren. Herwegh forderte: Nicht mehr klagen und betteln, sondern handeln!',
+      },
+    ],
+    quotes: [
+      {
+        id: 'q-herwegh-strophen',
+        author: 'Georg Herwegh',
+        role: 'Dichter der Freiheit',
+        year: '1841',
+        text: '„Reiß die Kreuze aus der Erden! / Alle Schwerter sollen werden! / Gott im Himmel wirds verzeihn. / Vorwärts, Volk! Es muß geschlagen sein!“',
+        source: 'Dem deutschen Volk / Aufruf',
+        task: 'Untersuche die kriegerischen Metaphern und die Botschaft an das zögerliche Volk.',
+      },
+    ],
+    quiz: [
+      {
+        id: 'q4-1',
+        question: 'Welches zentrale Stilmittel nutzt Herwegh in „Dem deutschen Volk“?',
+        options: [
+          'Friedliche Landschaftsbeschreibungen und Naturromantik.',
+          'Dringliche Weckrufe und Metaphern wie das Schütteln der Fesseln, Zerschlagen von Götzen und Aufraffen zum Kampf.',
+          'Ein Loblied auf die Klugheit der preußischen Zensurbehörden.',
+        ],
+        correctIndex: 1,
+        explanation: 'Herwegh wirft den Deutschen vor, tatenlos zu schlafen und zu jammern, statt ihre Ketten mit eigner Faust zu brechen.',
+      },
+      {
+        id: 'q4-2',
+        question: 'Wie reagierte die preußische und österreichische Obrigkeit auf solche Gedichte?',
+        options: [
+          'Sie druckte sie auf Staatskosten nach und verteilte sie an Schulen.',
+          'Sie verbot die Schriften, beschlagnahmte Bücher und steckte Verleger ins Gefängnis.',
+          'Sie ignorierte die Gedichte völlig, da niemand lesen konnte.',
+        ],
+        correctIndex: 1,
+        explanation: 'Herweghs Werke wurden verboten; er selbst lebte jahrelang im Exil in Zürich und Paris.',
+      },
+    ],
+    badgeId: 'badge-4',
+    miniGameType: 'poetry',
+  },
+  {
+    id: 5,
+    slug: 'revolution-1848',
+    period: 'Frühjahr 1848',
+    title: 'März 1848: Der Völkerfrühling',
+    subtitle: 'Barrikaden in Paris, Wien und Berlin – Die Fürsten wanken',
+    keyQuestion: 'Wie brachten die Märzunruhen die mächtigen Fürsten und Könige ins Wanken?',
+    color: 'orange',
+    summary: 'Im Februar 1848 brach in Paris die Revolution aus: Der französische Bürgerkönig dankte ab, die Republik wurde ausgerufen. Wie ein Lauffeuer sprang der Funke auf Europa über. In Wien musste Fürst Metternich fliehen; in Berlin zwangen bewaffnete Barrikadenkämpfer König Friedrich Wilhelm IV. in die Knie.',
+    contentParagraphs: [
+      {
+        heading: 'Märzforderungen in ganz Deutschland',
+        text: 'In Versammlungen formulierten Bürger die klassischen „Märzforderungen“:\n• Presse- und Versammlungsfreiheit\n• Schwurgerichte und Gleichheit vor dem Gesetz\n• Volksbewaffnung (Bürgerwehren)\n• Einberufung eines gesamtdeutschen Parlaments',
+      },
+      {
+        heading: 'Blutige Barrikadenkämpfe in Berlin',
+        text: 'Am 18. März 1848 demonstrierten tausende Berliner friedlich vor dem königlichen Schloss. Als zwei Schüsse aus den Reihen des Militärs fielen, brach der Aufstand los: Binnen Stunden wurden hunderte Barrikaden errichtet. Arbeiter, Studenten und Bürger lieferten sich erbitterte Gefechte mit den Garderegimentern.',
+        highlight: 'Über 200 Bürger fielen. Der König musste die Truppen abziehen und sich am 19. März barhäuptig vor den toten „Märzgefallenen“ verneigen.',
+      },
+      {
+        heading: '„Preußen geht fortan in Deutschland auf!“',
+        text: 'Am 21. März ritt der König mit einer schwarz-rot-goldenen Schärpe durch Berlin und versprach, sich an die Spitze der deutschen Einigung zu stellen. Die Fürsten gaben nach, beriefen liberale „Märzminister“ und stimmten freien Wahlen zu.',
+      },
+    ],
+    quotes: [
+      {
+        id: 'q-friedrich-wilhelm',
+        author: 'König Friedrich Wilhelm IV.',
+        role: 'König von Preußen',
+        year: '21. März 1848',
+        text: '„Deutschland ist von innerer Gärung ergriffen [...] Rettung aus dieser doppelten Gefahr kann nur durch die innigste Vereinigung der deutschen Fürsten und Völker unter einer Leitung hervorgehen. [...] Ich habe heute die alten deutschen Farben angenommen und mich und mein Volk unter das ehrwürdige Banner des Deutschen Reiches gestellt. Preußen geht fortan in Deutschland auf!“',
+        source: 'Proklamation „An mein Volk und an die deutsche Nation“',
+        task: 'Beurteile, ob der König diese Worte aus Überzeugung sprach oder um seine Krone vor den Revolutionären zu retten.',
+      },
+    ],
+    caricature: {
+      id: 'caricature-seeschlange',
+      title: 'Die große See-Schlange (Dezember 1848)',
+      year: '1848',
+      source: 'Illustrirte Zeitung Leipzig',
+      description: 'Eine gigantische Seeschlange mit Freiheitsmütze (Phrygische Mütze) windet sich durch das Meer und bedroht die Fürsten und Schiffe.',
+      guidingQuestion: 'Was symbolisiert die Seeschlange und warum fürchten sich die Herrscher Europas vor ihr?',
+      hotspots: [
+        {
+          x: 35,
+          y: 40,
+          title: 'Der Kopf der Seeschlange',
+          description: 'Die Schlange trägt die rote Freiheitsmütze der Französischen Revolution.',
+          historicalDetail: 'Sie verkörpert die revolutionäre Volksbewegung, die Grenzen überschreitet und alte Throne erschüttert.',
+        },
+        {
+          x: 70,
+          y: 65,
+          title: 'Die Schiffe der Monarchien',
+          description: 'Kleine Boote mit Flaggen der Fürstentümer versuchen verzweifelt, den riesigen Wellen zu entkommen.',
+          historicalDetail: 'Zeigt die Hilflosigkeit der feudalen Fürsten angesichts des weltweiten „Völkerfrühlings“ 1848.',
+        },
+      ],
+    },
+    quiz: [
+      {
+        id: 'q5-1',
+        question: 'Was zwang König Friedrich Wilhelm IV. am 19. März 1848 in Berlin zum Einlenken?',
+        options: [
+          'Eine Kriegserklärung aus Großbritannien.',
+          'Der erbitterte Widerstand der Berliner Bürger auf den Barrikaden und der Druck der aufgebahrten Toten im Schlosshof.',
+          'Der freiwillige Thronverzicht zugunsten seines Bruders.',
+        ],
+        correctIndex: 1,
+        explanation: 'Die Soldaten konnten die Stadt nicht befrieden; der König musste dem Volk Zugeständnisse machen und die Truppen abziehen.',
+      },
+      {
+        id: 'q5-2',
+        question: 'Welches europäische Land gab im Februar 1848 den Auftakt für die Revolutionen?',
+        options: ['Spanien', 'Frankreich', 'Russland'],
+        correctIndex: 1,
+        explanation: 'Mit der Februarrevolution 1848 in Paris und der Ausrufung der Zweiten Französischen Republik begann der europäische Völkerfrühling.',
+      },
+    ],
+    badgeId: 'badge-5',
+    miniGameType: 'barricade',
+  },
+  {
+    id: 6,
+    slug: 'paulskirche',
+    period: 'Mai 1848 – März 1849',
+    title: 'Das erste deutsche Parlament',
+    subtitle: 'Die Frankfurter Paulskirche – Honoratioren, Fraktionen & Grundrechte',
+    keyQuestion: 'Wie sollte das neue Deutschland aussehen: Republik oder Monarchie? Großdeutsch oder kleindeutsch?',
+    color: 'indigo',
+    summary: 'Am 18. Mai 1848 zogen 585 frei gewählte Abgeordnete in die Frankfurter Paulskirche ein. Es war das erste gesamtdeutsche Parlament der Geschichte. Über Monate stritten sie leidenschaftlich über Grundrechte, die Staatsform und die Grenzen des neuen Reiches.',
+    contentParagraphs: [
+      {
+        heading: 'Wer saß im Parlament? Das Honoratiorenparlament',
+        text: 'Gewählt wurden fast ausschließlich angesehene und gebildete Männer: Juristen, Professoren, Pfarrer, Beamte und Richter („Professorenparlament“). Arbeiter, Tagelöhner oder Handwerker waren kaum vertreten; Frauen besaßen weder Wahlrecht noch Sitz im Parlament.',
+      },
+      {
+        heading: 'Die Geburtsstunde moderner Parteien',
+        text: 'Abgeordnete mit ähnlichen Ansichten trafen sich abends in Gasthöfen, nach denen die Fraktionen benannt wurden:\n• Links (Donnersberg, Deutscher Hof): Radikale Demokraten, forderten eine Republik und allgemeines Wahlrecht.\n• Mitte (Casino, Württemberger Hof): Gemäßigte Liberale, forderten eine konstitutionelle Monarchie (Kaiser mit Parlament) und Wahlrecht für Steuerzahler.\n• Rechts (Café Milani): Konservative, Verteidiger der Fürstenrechte und gegen eine starke Volksvertretung.',
+      },
+      {
+        heading: 'Großdeutsch oder Kleindeutsch?',
+        text: 'Sollte das Vielvölkerreich Österreich dem deutschen Nationalstaat angehören? Die großdeutsche Lösung scheiterte, da Österreich seine ungarischen und slawischen Gebiete nicht abspalten wollte. Daher entschied sich die Mehrheit für die kleindeutsche Lösung: Einigung ohne Österreich, unter der Führung des preußischen Königs.',
+        highlight: 'Am 27. März 1849 verabschiedete die Paulskirche die Reichsverfassung mit einem wegweisenden Grundrechtekatalog!',
+      },
+    ],
+    quotes: [
+      {
+        id: 'q-grundrechte',
+        author: 'Reichsverfassung der Paulskirche',
+        role: 'Nationalversammlung',
+        year: '1849',
+        text: '„§ 137. Vor dem Gesetz gilt kein Unterschied der Stände. Der Adel als Stand ist aufgehoben. § 143. Jeder Deutsche hat das Recht, durch Wort, Schrift, Druck seine Meinung frei zu äußern. § 144. Glaubens- und Gewissensfreiheit ist gewährleistet.“',
+        source: 'Grundrechte des deutschen Volkes (§ 130–189)',
+        task: 'Vergleiche diese Grundrechte von 1849 mit den Artikeln 1 bis 5 unseres heutigen Grundgesetzes von 1949.',
+      },
+    ],
+    quiz: [
+      {
+        id: 'q6-1',
+        question: 'Warum wurde die Paulskirchenversammlung oft als „Professorenparlament“ bezeichnet?',
+        options: [
+          'Weil die Sitzungen an der Universität Heidelberg stattfanden.',
+          'Weil über 75 % der Abgeordneten Akademiker waren (Professoren, Juristen, Pfarrer) und fast keine Arbeiter vertreten waren.',
+          'Weil die Abgeordneten täglich Latein sprechen mussten.',
+        ],
+        correctIndex: 1,
+        explanation: 'Es war ein Parlament der gebildeten Oberschicht. Arbeiter und Frauen blieben von den Entscheidungen faktisch ausgeschlossen.',
+      },
+      {
+        id: 'q6-2',
+        question: 'Was bedeutete die „Kleindeutsche Lösung“?',
+        options: [
+          'Ein deutscher Nationalstaat ohne Österreich, geführt vom preußischen König.',
+          'Ein Zusammenschluss nur der kleinsten Fürstentümer wie Liechtenstein und Reuß.',
+          'Ein Staat, der nur aus Preußen und Bayern bestand.',
+        ],
+        correctIndex: 0,
+        explanation: 'Da Österreichs Kaiser seine nichtdeutschen Kronländer nicht abtreten wollte, entschied man sich für Deutschland unter preußischer Führung.',
+      },
+    ],
+    badgeId: 'badge-6',
+    miniGameType: 'paulskirche',
+  },
+  {
+    id: 7,
+    slug: 'ende-der-revolution',
+    period: 'Frühjahr – Sommer 1849',
+    title: 'Das Ende & Vermächtnis der Revolution',
+    subtitle: 'Kaiserkrone abgelehnt, Barrikaden zerschossen – Was bleibt?',
+    keyQuestion: 'Warum scheiterte die Revolution von 1848/49 und was verdankt unsere Demokratie ihr heute?',
+    color: 'red',
+    summary: 'Im April 1849 reiste eine Abordnung der Paulskirche nach Berlin, um Friedrich Wilhelm IV. die Kaiserkrone anzutragen. Der preußische König lehnte hochmütig ab: Eine Krone aus den Händen des Volkes trage den „Ludergeruch der Revolution“. Truppen schlugen die letzten Aufstände in Dresden, der Pfalz und Baden (Rastatt) blutig nieder. Doch das geistige Erbe überdauerte.',
+    contentParagraphs: [
+      {
+        heading: 'Die Ablehnung der Kaiserkrone',
+        text: 'Am 3. April 1849 wies König Friedrich Wilhelm IV. die Kaiserdeputation ab. In einem vertraulichen Brief an Bunsen schrieb er verächtlich: Die Krone sei ein „aus Dreck und Letten gebackener Reif“, er wolle keine Krone, die mit dem „Ludergeruch der Revolution“ behaftet sei. Er akzeptiere eine Krone nur von Gottes Gnaden und mit Zustimmung der Fürsten.',
+      },
+      {
+        heading: 'Die Reichsverfassungskampagne & Festung Rastatt',
+        text: 'Empört über den Verrat der Monarchen erhoben sich die Menschen in Sachsen, der Pfalz und Baden erneut zu bewaffneten Maiaufständen, um die Reichsverfassung zu erzwingen. Preußische Truppen marschierten ein. Mit der Kapitulation der Freiheitskämpfer in der Bundesfestung Rastatt am 23. Juli 1849 endete die Revolution.',
+        highlight: 'Tausende Revolutionäre wurden hingerichtet, eingekerkert oder mussten in die USA fliehen („Forty-Eighters“).',
+      },
+      {
+        heading: 'War die Revolution umsonst? Das Vermächtnis',
+        text: 'Auch wenn Einheit und Freiheit 1848 nicht vollendet wurden, war die Revolution kein vergebliches Opfer:\n• Die Grundrechte von 1849 bildeten die direkte Blaupause für das Grundgesetz von 1949.\n• Die Farben Schwarz-Rot-Gold wurden zum Symbol für Freiheit und Demokratie.\n• Aus den Fraktionen der Paulskirche entstanden unsere modernen Parteienfamilien.\n• Der Gedanke der Verfassung und des Parlaments konnte von den Fürsten nie wieder völlig ausgelöscht werden.',
+      },
+    ],
+    quotes: [
+      {
+        id: 'q-ludergeruch',
+        author: 'Friedrich Wilhelm IV.',
+        role: 'König von Preußen',
+        year: '1848 / 1849',
+        text: '„Jeder deutsche Edelmann [...] ist hundertmal zu gut dazu, um solch ein Diadem aus Dreck und Letten der Revolution, des Treubruchs und des Hochverrats geschmiedet, anzunehmen. Die alte, legitime Krone ruht auf Gottes Gnaden, das Diadem von Gottes Gnaden... das man nicht annehmen kann ohne Verrat!“',
+        source: 'Geheimer Brief an seinen Gesandten Bunsen',
+        task: 'Erkläre, warum der preußische König die Krone von einem gewählten Volksparlament als Schmach empfand.',
+      },
+      {
+        id: 'q-historiker',
+        author: 'Prof. Dr. Hagen Schulze',
+        role: 'Historiker',
+        year: '1996',
+        text: '„Oberflächlich betrachtet konnte es scheinen, als sei die Revolution von 1848/49 gescheitert. Doch die Revolution hatte die Grundlagen des alten Staates für immer verändert. Die Revolutionäre scheiterten vor allem an der doppelten Aufgabe: Sie sollten gleichzeitig die nationale Einheit schaffen und die freiheitliche Verfassung erringen – eine Überforderung.“',
+        source: 'Kleine deutsche Geschichte',
+        task: 'Diskutiere die These: Ist die Revolution gescheitert oder waren ihre Aufgaben schlicht zu gewaltig?',
+      },
+    ],
+    caricature: {
+      id: 'caricature-soll-ich',
+      title: 'Soll ich? – Soll ich nicht? (1849)',
+      year: '1849',
+      source: 'Satirische Lithografie auf Friedrich Wilhelm IV.',
+      description: 'Der preußische König betrachtet nachdenklich die Kaiserkrone auf einem Tisch, während er schwankt, ob er zugreifen soll.',
+      guidingQuestion: 'Wie spottet der Zeichner über das Zaudern und die Arroganz des preußischen Königs?',
+      hotspots: [
+        {
+          x: 45,
+          y: 35,
+          title: 'Das Zaudern des Monarchen',
+          description: 'Der König hält die Hand am Kinn: Er will die Macht, verachtet aber den Volkswillen.',
+          historicalDetail: 'Der König wollte Kaiser sein, aber nur als unumschränkter Herrscher und nicht als Marionette eines Parlaments.',
+        },
+        {
+          x: 75,
+          y: 55,
+          title: 'Die Kaiserkrone der Paulskirche',
+          description: 'Die Krone liegt auf einem Kissen, angeboten von den bürgerlichen Abgeordneten.',
+          historicalDetail: 'Für den König roch sie nach „Gosse und Revolution“, da sie ihm vom Volk und nicht von Gott übertragen wurde.',
+        },
+      ],
+    },
+    quiz: [
+      {
+        id: 'q7-1',
+        question: 'Warum lehnte Friedrich Wilhelm IV. die Kaiserkrone der Paulskirche ab?',
+        options: [
+          'Weil die Krone aus Silber statt aus Gold geschmiedet war.',
+          'Weil er eine Krone nur von Gottes Gnaden und den Fürsten akzeptieren wollte, nicht aber aus den Händen eines bürgerlichen Parlaments.',
+          'Weil er lieber König von Frankreich werden wollte.',
+        ],
+        correctIndex: 1,
+        explanation: 'Der König hielt am Gottesgnadentum fest und verachtete die Volkssouveränität zutiefst.',
+      },
+      {
+        id: 'q7-2',
+        question: 'Was ist das dauerhafte Vermächtnis der Revolution 1848/49 für die heutige Bundesrepublik Deutschland?',
+        options: [
+          'Die Wiedereinführung der preußischen Monarchie.',
+          'Der Grundrechtekatalog, die Bundesflagge Schwarz-Rot-Gold und das Fundament unseres demokratischen parlamentarischen Systems.',
+          'Das Verbot aller Universitäten und Gewerkschaften.',
+        ],
+        correctIndex: 1,
+        explanation: 'Die Väter und Mütter des Grundgesetzes von 1949 übernahmen die Grundrechte der Paulskirche fast unverändert in Artikel 1 bis 19 GG.',
+      },
+    ],
+    badgeId: 'badge-7',
+    miniGameType: 'constitution',
+  },
+];
+
+export const PAULSKIRCHE_SEATING = [
+  {
+    faction: 'Donnersberg & Deutscher Hof',
+    wing: 'links' as const,
+    name: 'Radikale Demokraten',
+    ideology: 'Republik, Volkssouveränität, allgemeines & gleiches Wahlrecht für alle Männer, soziale Reformen.',
+    figures: 'Friedrich Hecker, Gustav Struve, Robert Blum',
+    color: 'red',
+  },
+  {
+    faction: 'Casino & Württemberger Hof',
+    wing: 'mitte' as const,
+    name: 'Gemäßigte Liberale',
+    ideology: 'Konstitutionelle Monarchie (Kaiser an Verfassung gebunden), Zensuswahlrecht (nur Steuerzahler), Kompromiss mit Fürsten.',
+    figures: 'Heinrich von Gagern, Friedrich Christoph Dahlmann',
+    color: 'blue',
+  },
+  {
+    faction: 'Café Milani',
+    wing: 'rechts' as const,
+    name: 'Konservative',
+    ideology: 'Erhalt der Fürstenmacht, Gottesgnadentum, Föderalismus der Einzelstaaten, Ablehnung von Volkssouveränität.',
+    figures: 'Joseph von Radowitz, Ernst Ludwig von Gerlach',
+    color: 'amber',
+  },
+];

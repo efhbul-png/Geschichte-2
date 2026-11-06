@@ -1,0 +1,6 @@
+{
+  "name": "Einigkeit und Freiheit (1815–1849) – Interaktive Geschichts-Zeitreise",
+  "description": "Interaktive Lernplattform zur deutschen Revolution 1848/49, Restauration und Vormärz mit Quests, Karikaturen-Lupe, Paulskirchen-Simulation und Lehrer-Dashboard.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
